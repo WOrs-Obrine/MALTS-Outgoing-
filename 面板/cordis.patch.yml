@@ -1,0 +1,4 @@
+# dsh-impressions bundle patch：只放挂载声明，配置由插件自己管。
+- insert:
+    - id: impressions
+      name: dsh-impressions
