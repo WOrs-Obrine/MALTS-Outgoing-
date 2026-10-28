@@ -666,8 +666,8 @@ window.__ModuleLoader__.load({
             h('button', { type: 'button', disabled: busy, onClick: () => setOn(!on), style: { padding: '3px 12px', fontSize: 12, borderRadius: 6, cursor: 'pointer' } }, on ? '关掉' : '打开（4 小时）'),
           ),
           h('div', { style: { ...awakenMuted, marginTop: 4 } }, on
-            ? '到 ' + fmtTime(data.until) + ' 自动关。开着时可以改本体（人设/提示词库/插件代码/配置/守护脚本），只改主人要求的地方；日常聊天和读写不受影响。'
-            : '关着时她照常聊天、读语料/设定/记忆、用日常工具；只有改本体（人设/提示词库/插件代码/配置/守护脚本）才需要开。只能在这里开关——她在 QQ 里说这句话不会改状态（会被告知去后台开）。'),
+            ? '到 ' + fmtTime(data.until) + ' 自动关。开着时可以改本体（人设/提示词/插件代码/配置/守护脚本），只改主人要求的地方；日常聊天和读写不受影响。'
+            : '关着时她照常聊天、读语料/设定/记忆、用日常工具；只有改本体（人设/提示词/插件代码/配置/守护脚本）才需要开。只能在这里开关——她在 QQ 里说这句话不会改状态（会被告知去后台开）。'),
         ),
         h('div', { style: awakenCard },
           h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
