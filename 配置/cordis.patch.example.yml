@@ -1,0 +1,40 @@
+# 配置模板（复制成 cordis.patch.yml 再填）
+# 注意：改完必须重启宿主才生效；YAML 缩进用空格，别用 Tab。
+
+onebot:
+  # NapCat 正向 WS 地址
+  wsUrl: "ws://127.0.0.1:3001"
+  accessToken: "CHANGE_ME"
+
+  # 小号（bot 自己）
+  botQQ: 1000000001
+  # 大号（主人）—— 主人权限、开发者模式口令、私密玩法只认这个号
+  ownerQQ: 1000000002
+  adminUsers:
+    - "1000000002"
+
+  # 私聊策略：allowlist 只回名单里的人；open 全回（不建议）
+  dmPolicy: "allowlist"
+  # 私聊只回好友
+  dmFriendsOnly: true
+  # 群里要求 @ 或叫名字才回（省 token）
+  requireMention: true
+
+  # 人设文件（每回合现读，改完即生效）
+  persona: "D:/my-bot/persona/my-fish.md"
+
+  # 上下文轮换：任一满足就换新会话
+  autoRotateTurns: 40
+  autoRotateCtxTokens: 120000
+  autoRotateHours: 24
+
+# 旁听侧车（如果你的插件支持内嵌配置；否则用环境变量/单独 config.json）
+sidecar:
+  impressionsPath: "D:/my-bot/data/impressions.json"
+  growthPath: "D:/my-bot/data/growth.json"
+  hormonePath: "D:/my-bot/data/hormones.json"
+  memoryRoot: "D:/my-bot/memory"
+  # 真发开关：先 false 观察，确认逻辑对了再 true
+  sendEnabled: false
+  # 固定群（无聊去冒泡）；留空 = 关闭
+  barGroupId: null
