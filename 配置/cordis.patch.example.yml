@@ -1,40 +1,66 @@
-# 配置模板（复制成 cordis.patch.yml 再填）
-# 注意：改完必须重启宿主才生效；YAML 缩进用空格，别用 Tab。
+# 配置模板：复制成 cordis.patch.yml 再填
+# 注意：改完必须**完全退出并重开**宿主才生效。YAML 用空格缩进，别用 Tab。
 
-onebot:
-  # NapCat 正向 WS 地址
+dsh-onebot:
+  # ── 连接 ────────────────────────────────────────────────
+  # NapCat 正向 WS 地址。
+  # 为什么用 WS：事件推送天然贴合「收到消息 → 唤醒一次」，HTTP 要轮询。
   wsUrl: "ws://127.0.0.1:3001"
   accessToken: "CHANGE_ME"
 
-  # 小号（bot 自己）
-  botQQ: 1000000001
-  # 大号（主人）—— 主人权限、开发者模式口令、私密玩法只认这个号
+  # ── 身份 ────────────────────────────────────────────────
+  botQQ: 1000000001          # 小号
+  # 主人号。「危险能力」（改文件、开发者模式、敏感场景）只认这个号。
+  # 为什么单独一个字段：换号时不用改代码；也让「是不是主人」只有一处判定。
   ownerQQ: 1000000002
   adminUsers:
     - "1000000002"
 
-  # 私聊策略：allowlist 只回名单里的人；open 全回（不建议）
-  dmPolicy: "allowlist"
-  # 私聊只回好友
-  dmFriendsOnly: true
-  # 群里要求 @ 或叫名字才回（省 token）
-  requireMention: true
+  # ── 谁能叫醒她（决定花不花这次钱）────────────────────────
+  dmPolicy: "allowlist"      # allowlist = 只回名单；open = 全回（不建议）
+  dmFriendsOnly: true        # 私聊只回好友
+  requireMention: true       # 群里 @ 或叫名字才回
+  # 受限成员前缀（某些人进群聊要特殊处理，例如只读不回）
+  restrictedMemberPrefix: ""
 
-  # 人设文件（每回合现读，改完即生效）
+  # ── 人设 ────────────────────────────────────────────────
+  # 每回合现读：改完保存即生效，不用重启。
+  # 为什么是文件：调人设是最高频操作，写进代码就要重启，重启会打断对话。
   persona: "D:/my-bot/persona/my-fish.md"
 
-  # 上下文轮换：任一满足就换新会话
-  autoRotateTurns: 40
-  autoRotateCtxTokens: 120000
-  autoRotateHours: 24
+  # ── 上下文轮换（成本关键项，别乱调）──────────────────────
+  # 任一条件满足就换新会话。换会话 = 一次冷启动（第一条要重读系统提示）。
+  # 阈值太小 → 冷启动次数翻倍，更贵；太大 → 上下文稀释、人设漂移。
+  # 经验值：回合 50，token 取窗口的 85% 左右（如窗口 128K 就填 110000）。
+  autoRotateTurns: 50
+  autoRotateCtxTokens: 110000
+  autoRotateHours: 24        # 兜底：一天必换，防漂移
+  handoffLines: 60           # 换会话时写多少条最近记录做交接（指针式，不写全文）
 
-# 旁听侧车（如果你的插件支持内嵌配置；否则用环境变量/单独 config.json）
+  # ── 发送 ────────────────────────────────────────────────
+  # 长回复分段：目标段长（字）、最多几段、段间随机延迟（毫秒）
+  splitTarget: 42
+  splitMax: 6
+  splitDelayMin: 180
+  splitDelayMax: 520
+
+  # ── 中间态（可选）───────────────────────────────────────
+  # 一个回合里她可能先说话再调工具。开这个可以把中间那段先发出去，
+  # 让人知道「在想」，结束时再用总结替换。
+  # 坑：如果总结发送失败，千万别撤回中间记录，否则那段话彻底消失。
+  interimMessages: false
+  interimRecall: false
+
+# ── 旁听侧车 ──────────────────────────────────────────────
+# 如果你的插件支持内嵌配置就用这里；否则用环境变量或独立 config.json。
 sidecar:
-  impressionsPath: "D:/my-bot/data/impressions.json"
-  growthPath: "D:/my-bot/data/growth.json"
-  hormonePath: "D:/my-bot/data/hormones.json"
+  impressionsPath: "D:/my-bot/data/印象.json"
+  growthPath: "D:/my-bot/data/养成.json"
+  hormonePath: "D:/my-bot/data/激素.json"
   memoryRoot: "D:/my-bot/memory"
-  # 真发开关：先 false 观察，确认逻辑对了再 true
+  # 真发开关：先 false 观察两天，确认数值/状态卡都对再 true。
   sendEnabled: false
-  # 固定群（无聊去冒泡）；留空 = 关闭
+  # 固定群（无聊时去冒泡）；留空 = 关闭
   barGroupId: null
+  # tick 间隔（毫秒）。10 分钟足够；1 分钟一次纯属浪费 CPU。
+  tickMs: 600000
